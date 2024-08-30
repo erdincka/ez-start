@@ -1,5 +1,7 @@
 import logging
+import sys
 
+import common
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +48,6 @@ def consume(stream: str, topic: str, consumer_group: str):
 
             elif message.error().code() == KafkaError._PARTITION_EOF:
                 logger.info("No more messages in topic: %s", topic)
-                # ui.notify(f"No more messages in {topic}")
                 raise EOFError
             # silently ignore other errors
             else: logger.warning(message.error())
@@ -56,3 +57,23 @@ def consume(stream: str, topic: str, consumer_group: str):
 
     finally:
         consumer.close()
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "produce":
+            with open("./data/Testing_set_ccpp.csv", "r") as f:
+                for i, line in enumerate(f):
+                    if i > 10: break
+                    print(produce("/apps/stream1", "topic1", line))
+
+        elif sys.argv[1] == "consume":
+            for msg in consume("/apps/stream1", "topic1", "cg1"):
+                print(msg)
+
+        else:
+            logger.error("Don't know how to do anything beyond produce|consume")
+
+    else:
+        print(f'Usage: python3 {sys.argv[0]} produce|consume')
