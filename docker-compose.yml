@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  pacc:
+    image: maprtech/pacc:7.2.0_9.1.0_ubuntu20_yarn_fuse_hbase_hive_spark_streams
+    restart: unless-stopped
+    environment:
+      MAPR_CLUSTER: df20
+      MAPR_TZ: Europe/London
+      MAPR_CLDB_HOSTS: 10.1.1.25
+      MAPR_CONTAINER_USER: mapr
+      MAPR_CONTAINER_PASSWORD: mapr123
+      MAPR_CONTAINER_UID: 5000
+      MAPR_CONTAINER_GID: 5000
+      MAPR_CONTAINER_GROUP: mapr
+      MAPR_TICKETFILE_LOCATION: /tmp/mapr-ticket
+      # MAPR_MOUNT_PATH: /mapr
+      LD_LIBRARY_PATH: /opt/mapr/lib
+      JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
+      SHELL: /bin/bash
+      LC_ALL: en_US.UTF-8
+      LANG: en_US.UTF-8
+      LANGUAGE: en_US.UTF-8
+    volumes:
+      - app:/app
+    command: sleep infinity
+
+volumes:
+  app:
