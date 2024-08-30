@@ -5,9 +5,9 @@ set -euo pipefail
 # Setup the pacc instance
 apt update
 apt upgrade -y
-install -y openssh-client sshpass python3-pip
+apt install -y openssh-client sshpass python3-pip
 pip3 install --global-option=build_ext --global-option="--library-dirs=/opt/mapr/lib" --global-option="--include-dirs=/opt/mapr/include/" mapr-streams-python
-pip3 install maprdb-python-client
+pip3 install maprdb-python-client deltalake pandas
 
 [ -f /root/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /root/.ssh/id_rsa -q -N ""
 

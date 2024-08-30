@@ -1,6 +1,7 @@
-from common import *
+import logging
 
-logger = logging.getLogger("streams")
+
+logger = logging.getLogger(__name__)
 
 
 def produce(stream: str, topic: str, message: str):
@@ -15,7 +16,6 @@ def produce(stream: str, topic: str, message: str):
 
     except Exception as error:
         logger.warning(error)
-        ui.notify(error, type='warning')
         return False
 
     finally:
@@ -38,7 +38,7 @@ def consume(stream: str, topic: str, consumer_group: str):
         consumer.subscribe([f"{stream}:{topic}"])
 
         while True:
-            message = consumer.poll(timeout=MAX_POLL_TIME)
+            message = consumer.poll(timeout=5.0)
 
             if message is None: raise EOFError
 

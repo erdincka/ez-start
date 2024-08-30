@@ -1,12 +1,11 @@
+import logging
+import os
 import socket
 from mapr.ojai.storage.ConnectionFactory import ConnectionFactory
 
 import pandas as pd
 from deltalake import DeltaTable, write_deltalake
 
-from nicegui import app
-
-from common import *
 import timeit
 
 logger = logging.getLogger("tables")
@@ -27,10 +26,10 @@ def get_connection():
     global ojaiconnection
     if ojaiconnection is not None: return ojaiconnection
 
-    connection_str = f"{app.storage.user['MAPR_HOST']}:5678?auth=basic;user={app.storage.user['MAPR_USER']};password={app.storage.user['MAPR_PASS']};" \
+    connection_str = f"{os.environ['MAPR_CLDB_HOSTS']}:5678?auth=basic;user={os.environ['MAPR_CONTAINER_USER']};password={os.environ['MAPR_CONTAINER_PASSWORD']};" \
             "ssl=true;" \
             "sslCA=/opt/mapr/conf/ssl_truststore.pem;" \
-            f"sslTargetNameOverride={socket.getfqdn(app.storage.user['MAPR_HOST'])}"
+            f"sslTargetNameOverride={socket.getfqdn(os.environ['MAPR_CLDB_HOSTS'])}"
 
     ojaiconnection = ConnectionFactory.get_connection(connection_str=connection_str)
     logger.info("Got new maprdb connection using OJAI in %f sec", timeit.default_timer() - tick)
@@ -166,7 +165,7 @@ def search_documents(table: str, selectClause: list, whereClause: dict):
         return doc
 
 
-async def get_documents(table_path: str, limit: int = FETCH_RECORD_NUM):
+async def get_documents(table_path: str, limit: int = 15):
     """
     Read `limit` records from the table to peek data
 
@@ -213,42 +212,13 @@ async def get_documents(table_path: str, limit: int = FETCH_RECORD_NUM):
         return []
 
 
-# SSE-TODO: binary table create/read/write functions
-# using Spark or any other means
-# we may use REST API but I couldn't find rich REST functionality (read/write) for binary tables
-
-def binary_table_upsert(table_path: str, row: dict):
-    """
-    Create or return table, then push the row into the table
-
-    :param table_path str: full path to the table
-
-    :param row dict: object to insert into the table
-
-    :returns bool: result of op
-    """
-
-    not_implemented()
-
-
-def binary_table_get_all(table_path: str):
-    """
-    Returns all records from the binary table as ???
-
-    :param table_path str: full path to the table
-
-    :returns ??: record as dict
-    """
-
-    not_implemented()
-
 async def delta_table_upsert(table_path: str, records: pd.DataFrame):
     """
     Write list of dicts into Delta Lake table
     """
 
     try:
-        table_uri = f"{MOUNT_PATH}/{get_cluster_name()}{table_path}"
+        table_uri = f"/mapr/{os.environ['MAPR_CLUSTER']}/{table_path}"
 
         df = pd.DataFrame().from_records(records)
 
@@ -285,7 +255,7 @@ async def delta_table_get(table_path, query: str = None):
     Returns all records from the binary table as DataFrame
     """
 
-    fullpath = f"{MOUNT_PATH}/{get_cluster_name()}{table_path}"
+    fullpath = f"/mapr/{os.environ['MAPR_CLUSTER']}/{table_path}"
 
     if not os.path.exists(fullpath):
         logger.warning("%s not created yet", fullpath)
