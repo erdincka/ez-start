@@ -8,7 +8,7 @@ apt upgrade -y
 apt install -y locales openssh-client sshpass python3-pip
 locale-gen en_US.UTF-8
 pip3 install --global-option=build_ext --global-option="--library-dirs=/opt/mapr/lib" --global-option="--include-dirs=/opt/mapr/include/" mapr-streams-python
-pip3 install maprdb-python-client deltalake pandas
+pip3 install maprdb-python-client deltalake pandas minio
 
 # Setup SSH
 [ -f /root/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /root/.ssh/id_rsa -q -N ""

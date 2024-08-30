@@ -3,12 +3,9 @@ import os
 import socket
 from mapr.ojai.storage.ConnectionFactory import ConnectionFactory
 
-import pandas as pd
-from deltalake import DeltaTable, write_deltalake
-
 import timeit
 
-logger = logging.getLogger("tables")
+logger = logging.getLogger(__name__)
 
 # suppress ojai connection logging
 logging.getLogger("mapr.ojai.storage.OJAIConnection").setLevel(logging.NOTSET)
@@ -210,65 +207,3 @@ async def get_documents(table_path: str, limit: int = 15):
     except Exception as error:
         logger.warning("Failed to get document: %s", error)
         return []
-
-
-async def delta_table_upsert(table_path: str, records: pd.DataFrame):
-    """
-    Write list of dicts into Delta Lake table
-    """
-
-    try:
-        table_uri = f"/mapr/{os.environ['MAPR_CLUSTER']}/{table_path}"
-
-        df = pd.DataFrame().from_records(records)
-
-        if not os.path.exists(table_uri):
-            write_deltalake(table_or_uri=table_uri, data=df, mode="append", schema_mode="merge")
-            logger.debug("Created new Delta table in %s", table_uri)
-        else:
-            dt = DeltaTable(table_uri=table_uri)
-
-            merge_result = (
-                dt.merge(
-                    source=df,
-                    predicate="s._id = t._id",
-                    source_alias="s",
-                    target_alias="t",
-                )
-                .when_matched_update_all()
-                .when_not_matched_insert_all()
-                .execute()
-            )
-
-            logger.debug(merge_result)
-
-    except Exception as error:
-        logger.error("Failed to write: %s", table_path)
-        logger.error(error)
-        return False
-
-    return True
-
-
-async def delta_table_get(table_path, query: str = None):
-    """
-    Returns all records from the binary table as DataFrame
-    """
-
-    fullpath = f"/mapr/{os.environ['MAPR_CLUSTER']}/{table_path}"
-
-    if not os.path.exists(fullpath):
-        logger.warning("%s not created yet", fullpath)
-        return pd.DataFrame()
-
-    try:
-        if query is None or query == "":
-            return DeltaTable(fullpath).to_pandas()
-        else:
-            fraud = "fraud" # for query string
-            return DeltaTable(fullpath).to_pandas().query(query)
-
-    except Exception as error:
-        logger.error("Failed to read: %s", fullpath)
-        logger.error(error)
-        return pd.DataFrame()
