@@ -5,9 +5,12 @@ services:
     restart: unless-stopped
     ports:
       - "3000:3000"
+    privileged: true
     cap_add:
       - SYS_ADMIN
       - SYS_RESOURCE
+    devices:
+      - /dev/fuse:/dev/fuse
     environment:
       MAPR_CLUSTER: df20
       MAPR_TZ: Europe/London
@@ -18,7 +21,7 @@ services:
       MAPR_CONTAINER_GID: 5000
       MAPR_CONTAINER_GROUP: mapr
       MAPR_TICKETFILE_LOCATION: /tmp/mapr-ticket
-      # MAPR_MOUNT_PATH: /mapr
+      MAPR_MOUNT_PATH: /mapr
       LD_LIBRARY_PATH: /opt/mapr/lib
       JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
       SHELL: /bin/bash

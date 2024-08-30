@@ -5,24 +5,26 @@ set -euo pipefail
 # Setup the pacc instance
 apt update
 apt upgrade -y
-apt install -y openssh-client sshpass python3-pip
+apt install -y locales openssh-client sshpass python3-pip
+locale-gen en_US.UTF-8
 pip3 install --global-option=build_ext --global-option="--library-dirs=/opt/mapr/lib" --global-option="--include-dirs=/opt/mapr/include/" mapr-streams-python
 pip3 install maprdb-python-client deltalake pandas
 
+# Setup SSH
 [ -f /root/.ssh/id_rsa ] || ssh-keygen -t rsa -b 2048 -f /root/.ssh/id_rsa -q -N ""
 
 # remove old entries
 ssh-keygen -f "/root/.ssh/known_hosts" -R ${MAPR_CLDB_HOSTS} || true # ignore errors/not-found
 sshpass -p "${MAPR_CONTAINER_PASSWORD}" ssh-copy-id -o StrictHostKeyChecking=no "${MAPR_CONTAINER_USER}@${MAPR_CLDB_HOSTS}"
 
-scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/ssl_truststore.* /opt/mapr/conf/
+scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/ssl_truststore* /opt/mapr/conf/
 
 # This is already done by the pacc image
 # /opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS}
 # echo "Finished configuring MapR"
 
-scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprkeycreds.* /opt/mapr/conf/
-scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprtrustcreds.* /opt/mapr/conf/
+scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprkeycreds* /opt/mapr/conf/
+scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprtrustcreds* /opt/mapr/conf/
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprhsm.conf /opt/mapr/conf/
 
 ### Update ssl conf
