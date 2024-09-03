@@ -3,8 +3,6 @@ services:
   pacc:
     image: maprtech/pacc:7.2.0_9.1.0_ubuntu20_yarn_fuse_hbase_hive_spark_streams
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     privileged: true
     cap_add:
       - SYS_ADMIN
@@ -29,8 +27,8 @@ services:
       LANG: en_US.UTF-8
       LANGUAGE: en_US.UTF-8
     volumes:
-      - app:/app
+      - pacc_app:/app
     command: sleep infinity
 
 volumes:
-  app:
+  pacc_app:
