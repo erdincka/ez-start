@@ -1,14 +1,27 @@
-version: '3.8'
+version: '3'
+
 services:
-  pacc:
+  mapr-client:
     image: maprtech/pacc:7.2.0_9.1.0_ubuntu20_yarn_fuse_hbase_hive_spark_streams
     restart: unless-stopped
+
+    volumes:
+      - app:/app:cached
+
+    working_dir: /app
+    # Overrides default command so things don't shut down after the process ends.
+    # entrypoint: /app/docker-init.sh
+    entrypoint: bash -c "[ -d .git ] || wget https://github.com/erdincka/pacc-app/raw/master/docker-init.sh"
+    command: sleep infinity
+
     privileged: true
     cap_add:
       - SYS_ADMIN
       - SYS_RESOURCE
+
     devices:
       - /dev/fuse:/dev/fuse
+
     environment:
       MAPR_CLUSTER: df20
       MAPR_TZ: Europe/London
@@ -18,7 +31,7 @@ services:
       MAPR_CONTAINER_UID: 5000
       MAPR_CONTAINER_GID: 5000
       MAPR_CONTAINER_GROUP: mapr
-      MAPR_TICKETFILE_LOCATION: /tmp/mapr-ticket
+      MAPR_TICKETFILE_LOCATION: /tmp/maprticket_0
       MAPR_MOUNT_PATH: /mapr
       LD_LIBRARY_PATH: /opt/mapr/lib
       JAVA_HOME: /usr/lib/jvm/java-11-openjdk-amd64
@@ -26,9 +39,6 @@ services:
       LC_ALL: en_US.UTF-8
       LANG: en_US.UTF-8
       LANGUAGE: en_US.UTF-8
-    volumes:
-      - pacc_app:/app
-    command: sleep infinity
 
 volumes:
-  pacc_app:
+  app:

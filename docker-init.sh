@@ -3,9 +3,10 @@
 set -euo pipefail
 
 # Setup the pacc instance
-apt update
-apt upgrade -y
-apt install -y locales openssh-client sshpass python3-pip
+# with temporary fix for package.mapr.com certificate error
+apt -o "Acquire::https::Verify-Peer=false" update
+apt -o "Acquire::https::Verify-Peer=false" upgrade -y
+apt -o "Acquire::https::Verify-Peer=false" install -y locales openssh-client sshpass python3-pip git
 locale-gen en_US.UTF-8
 pip3 install --global-option=build_ext --global-option="--library-dirs=/opt/mapr/lib" --global-option="--include-dirs=/opt/mapr/include/" mapr-streams-python
 pip3 install maprdb-python-client deltalake pandas minio
@@ -57,5 +58,7 @@ echo ${MAPR_CONTAINER_PASSWORD} | maprlogin password -user ${MAPR_CONTAINER_USER
 ([ -d /mapr ] && umount -l /mapr) || mkdir /mapr
 
 mount -t nfs4 -o nolock,soft ${MAPR_CLDB_HOSTS}:/mapr /mapr
+
+[ -d .git ] || git clone https://github.com/erdincka/pacc-app.git
 
 echo "Client is ready"

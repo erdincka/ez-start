@@ -2,9 +2,6 @@
 
 Copy the code you wish to try on one of the Data Fabric nodes, or use the [Docker Compose](./docker-compose.yml) file in this repo to build your client. Adjust the settings in the compose to reflect your cluster.
 
-## Clone the repository
-
-`git clone https://github.com/erdincka/pacc-app.git`
 
 ## Mocked data
 
