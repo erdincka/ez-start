@@ -4,9 +4,9 @@ set -euo pipefail
 
 # Setup the pacc instance
 # with temporary fix for package.mapr.com certificate error
-apt -o "Acquire::https::Verify-Peer=false" update
-apt -o "Acquire::https::Verify-Peer=false" upgrade -y
-apt -o "Acquire::https::Verify-Peer=false" install -y locales openssh-client sshpass python3-pip git
+DEBIAN_FRONTEND=noninteractive apt update
+DEBIAN_FRONTEND=noninteractive apt upgrade -y
+DEBIAN_FRONTEND=noninteractive apt install -y locales openssh-client sshpass python3-pip git
 locale-gen en_US.UTF-8
 pip3 install --global-option=build_ext --global-option="--library-dirs=/opt/mapr/lib" --global-option="--include-dirs=/opt/mapr/include/" mapr-streams-python
 pip3 install maprdb-python-client deltalake pandas minio
@@ -20,7 +20,7 @@ sshpass -p "${MAPR_CONTAINER_PASSWORD}" ssh-copy-id -o StrictHostKeyChecking=no 
 
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/ssl_truststore* /opt/mapr/conf/
 
-/opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS}
+/opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS} -a -g ${MAPR_CONTAINER_GROUP} -G ${MAPR_CONTAINER_GID} -on-prompt-cont -u ${MAPR_CONTAINER_USER} -U ${MAPR_CONTAINER_UID}
 # echo "Finished configuring MapR"
 
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprkeycreds* /opt/mapr/conf/
@@ -58,7 +58,7 @@ echo ${MAPR_CONTAINER_PASSWORD} | maprlogin password -user ${MAPR_CONTAINER_USER
 
 mount -t nfs4 -o nolock,soft ${MAPR_CLDB_HOSTS}:/mapr /mapr
 
-[ -d .git ] || git clone https://github.com/erdincka/pacc-app.git
+[ -d .git ] || git clone https://github.com/erdincka/pacc-app.git .
 
 echo "Client is ready, sleeping"
 
