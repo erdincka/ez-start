@@ -20,7 +20,7 @@ sshpass -p "${MAPR_CONTAINER_PASSWORD}" ssh-copy-id -o StrictHostKeyChecking=no 
 
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/ssl_truststore* /opt/mapr/conf/
 
-/opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS} -a
+/opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS} -a -u mapr
 #  -g ${MAPR_CONTAINER_GROUP} -G ${MAPR_CONTAINER_GID} -on-prompt-cont -u ${MAPR_CONTAINER_USER} -U ${MAPR_CONTAINER_UID}
 # echo "Finished configuring MapR"
 
