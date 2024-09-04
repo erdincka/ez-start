@@ -20,8 +20,7 @@ sshpass -p "${MAPR_CONTAINER_PASSWORD}" ssh-copy-id -o StrictHostKeyChecking=no 
 
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/ssl_truststore* /opt/mapr/conf/
 
-# This is already done by the pacc image
-# /opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS}
+/opt/mapr/server/configure.sh -c -secure -N ${MAPR_CLUSTER} -C ${MAPR_CLDB_HOSTS}
 # echo "Finished configuring MapR"
 
 scp -o StrictHostKeyChecking=no ${MAPR_CONTAINER_USER}@$MAPR_CLDB_HOSTS:/opt/mapr/conf/maprkeycreds* /opt/mapr/conf/
@@ -61,4 +60,6 @@ mount -t nfs4 -o nolock,soft ${MAPR_CLDB_HOSTS}:/mapr /mapr
 
 [ -d .git ] || git clone https://github.com/erdincka/pacc-app.git
 
-echo "Client is ready"
+echo "Client is ready, sleeping"
+
+sleep infinity

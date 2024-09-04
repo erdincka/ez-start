@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   mapr-client:
@@ -11,8 +11,8 @@ services:
     working_dir: /app
     # Overrides default command so things don't shut down after the process ends.
     # entrypoint: /app/docker-init.sh
-    entrypoint: bash -c "[ -d .git ] || wget https://github.com/erdincka/pacc-app/raw/master/docker-init.sh"
-    command: sleep infinity
+    entrypoint: bash -c 'mv /etc/apt/sources.list.d/mapr* /tmp/; ( [ -f /app/docker-init.sh ] || wget https://raw.githubusercontent.com/erdincka/pacc-app/master/docker-init.sh ) ; bash /app/docker-init.sh'
+    # command: sleep infinity
 
     privileged: true
     cap_add:
@@ -23,11 +23,11 @@ services:
       - /dev/fuse:/dev/fuse
 
     environment:
-      MAPR_CLUSTER: df20
+      MAPR_CLUSTER:
       MAPR_TZ: Europe/London
-      MAPR_CLDB_HOSTS: 10.1.1.25
+      MAPR_CLDB_HOSTS:
       MAPR_CONTAINER_USER: mapr
-      MAPR_CONTAINER_PASSWORD: mapr123
+      MAPR_CONTAINER_PASSWORD:
       MAPR_CONTAINER_UID: 5000
       MAPR_CONTAINER_GID: 5000
       MAPR_CONTAINER_GROUP: mapr
