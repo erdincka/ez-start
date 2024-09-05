@@ -22,7 +22,13 @@ https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/Spark/ConfigureSpark
 
 ## Create Stream
 
+Run this on the cluster node
+
 `maprcli stream create -path /apps/stream1 -produceperm p -consumeperm p -topicperm p`
+
+## Install Delta library
+
+`wget https://repo1.maven.org/maven2/io/delta/delta-spark_2.12/3.2.0/delta-spark_2.12-3.2.0.jar`
 
 ## Save this code in cluster filesystem (ie, /mapr/CHANGEME/apps/spark-stream.py)
 
@@ -32,10 +38,10 @@ https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/Spark/ConfigureSpark
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType
 
-mapr_user = "CHANGEME"
-mapr_password = "CHANGEME"
-hostname = "CHANGEME"
-topic = "/apps/stream1:topic1"
+mapr_user=
+mapr_password=
+hostname=
+topic="/apps/stream1:topic1"
 
 
 # Define Kafka parameters
@@ -74,10 +80,10 @@ def main():
         )
 
     # Define the Delta table path
-    delta_table_path = "file:///mapr/CHANGEME/apps/delta_table_1/"
+    delta_table_path = "maprfs:///apps/delta_table_1/"
 
     # Define the checkpoint directory path
-    checkpoint_dir = "file:///mapr/CHANGEME/apps/delta_checkpoint_1/"
+    checkpoint_dir = "maprfs:///apps/delta_checkpoint_1/"
 
     # Write the stream to the Delta table with a processing time trigger
     query = df \
@@ -103,9 +109,13 @@ if __name__ == "__main__":
 
 ```bash
 
+
 $SPARK_HOME/bin/spark-submit \
     --master yarn \
     --deploy-mode cluster \
+    --packages io.delta:delta-spark_2.12:3.2.0 \
+    --conf "spark.sql.extensions=io.delta.sql.DeltaSparkSessionExtension" \
+    --conf "spark.sql.catalog.spark_catalog=org.apache.spark.sql.delta.catalog.DeltaCatalog" \
     --conf spark.driver.cores=1 \
     --conf spark.driver.memory=1G \
     --conf spark.executor.instances=1 \

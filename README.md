@@ -57,7 +57,7 @@ Protocols: SFTP, HDFS, REST, NFS etc
 
     ```bash
     hadoop fs -put ./data/Testing_set_ccpp.csv
-    hadoop fs -ls /
+    hadoop fs -ls /user/mapr
     ```
 
 - [Python S3](./s3.py)

@@ -20,6 +20,7 @@ su - mapr
 
 export SPARK_VERSION=3.5.1
 export SPARK_HOME="/opt/mapr/spark/spark-${SPARK_VERSION}"
+export CLUSTER_NAME=
 
 # copy the jar to the cluster
 
@@ -30,14 +31,14 @@ $SPARK_HOME/bin/spark-submit --deploy-mode cluster \
     --class org.apache.spark.examples.SparkPi \
     --master yarn \
     --deploy-mode cluster \
-    file:///mapr/CHANGEME/apps/spark-examples_2.12-${SPARK_VERSION}.0-eep-930.jar 10
+    file:///mapr/${CLUSTER_NAME}/spark-examples_2.12-${SPARK_VERSION}.0-eep-930.jar 10
 
 # alternatively using maprfs:/// uri
 $SPARK_HOME/bin/spark-submit --deploy-mode cluster \
     --class org.apache.spark.examples.SparkPi \
     --master yarn \
     --deploy-mode cluster \
-    maprfs:///apps/spark-examples_2.12-${SPARK_VERSION}.0-eep-930.jar 10
+    maprfs:///spark-examples_2.12-${SPARK_VERSION}.0-eep-930.jar 10
 
 ```
 
