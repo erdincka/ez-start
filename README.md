@@ -1,20 +1,32 @@
-# Get started with Ezmeral Data Fabric
-
-Copy the code you wish to try on one of the Data Fabric nodes, or use the [Docker Compose](./docker-compose.yml) file in this repo to build your client. Adjust the settings in the compose to reflect your cluster.
+# Get started with Ezmeral
 
 
-## Mocked data
+## Data Fabric
 
-Got 2 data sets from kaggle.com.
-<!-- add reference/url for the data sets -->
+Simplest way to test functionality would be to use examples on one of the Data Fabric nodes, or use the [Docker Compose](./docker-compose.yml) file in this repo to build your client. Adjust the settings in the compose `environment` section to reflect your cluster.
 
-- Energy production and weather data from 2 different solar power plants:
+`docker compose up` should start and configure a client container using [PACC image](https://hub.docker.com/r/maprtech/pacc).
 
-    Production data:
-    `DATE_TIME,PLANT_ID,SOURCE_KEY,DC_POWER,AC_POWER,DAILY_YIELD,TOTAL_YIELD`
+PRO TIP: Create your own PACC image using [mapr-setup.sh](https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/AdvancedInstallation/CreatingPACCImage.html) script or [extend the image](https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/AdvancedInstallation/CustomizingaMapRPACC.html) with a `Dockerfile` and use it as your client.
 
-    Weather data:
-    `DATE_TIME,PLANT_ID,SOURCE_KEY,AMBIENT_TEMPERATURE,MODULE_TEMPERATURE,IRRADIATION`
+### Setting up Ecosystem Components
+
+- [Using Spark submit](./docs/Spark.md)
+
+- [Using Hive with Delta tables](./docs/HiveForDelta.md)
+
+- [Configure Hive with MariaDB](./docs/MariaDB_withHive.md)
+
+- [Configure Ranger](./docs/Ranger.md)
+
+- [Configure Tez and Hive](./docs/TEZ_UI.md)
+
+- [Using Zeppelin with Parquet and Hive](./docs/Zeppelin.md)
+
+
+### Mock data
+
+Got data set from kaggle.com: https://www.kaggle.com/datasets/gauravduttakiit/power-plant-data
 
 - Power plant sensor data:
 
@@ -25,29 +37,55 @@ Got 2 data sets from kaggle.com.
     `AT,EV,AP,RH,PE`
 
 
-## Data ingestion
+### Data ingestion
 
-S3 and Kafka are used to ingest data.
+Batch and streaming ingestion.
 
-Airflow / NiFi
+- [Python OJAI for DocumentDB](./tables.py)
 
-### Files & Objects
+- [Python deltalake Tables](./delta.py)
 
-SFTP, HDFS, REST, etc.
 
-- Read csv
+## Files and Objects
 
-- Write to S3 bucket
+
+Protocols: SFTP, HDFS, REST, NFS etc
+
+- [NFS](./docs/NFSMount.md)
+
+- HDFS:
+
+    ```bash
+    hadoop fs -put ./data/Testing_set_ccpp.csv
+    hadoop fs -ls /
+    ```
+
+- [Python S3](./s3.py)
+
+- [DocumentDB REST API](https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/MapR-DB/JSON_DB/GettingStartedMapRDBJSONRESTAPI.html)
 
 
 ### Streams
 
-- Read csv
+- [Using Spark Streaming](./docs/SparkStreamingDF.md)
 
-- Write to topic
+- [Using KSQL](./docs/KSQL-demo.md)
+
+- [Kafka Python](./streams.py)
+
+- [Kafka REST API](https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/Kafka/REST-post-topic-partition-message.html)
 
 
-## Exploratory analysis and cleaning
+### ETL & Data Processing
+
+- Airflow
+
+- NiFi
+
+
+## Unified Analytics
+
+### Exploratory analysis and cleaning
 
 Attach data sources to UA.
 

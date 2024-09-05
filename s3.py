@@ -68,12 +68,13 @@ def download_from_s3(endpoint: str, access_key: str, secret_key: str, bucket: st
 
 
 if __name__ == "__main__":
-    ep = "vm25.kayalab.uk:9000"
-    ak = "5FLXTS1LV8UDC8TCGHOLRDXJUSRIGU6AOIRUJJ7FHNK6ZQBB1JP14RBQYHEUUCY8U8STOR7YAVN4D2PRBAKN1VUJQ5GAHQDNR8E0G6H9CBGDTSQ1AQ50"
-    sk = "47O67YR0ZJKKKAEUUM48U1VAQ14Z3TAXAX6AEROJ4C3R01KGJ77X9AUI13UL8TAVN4G6UQU8X76THO62AT4L85DA0QQGO2AN230D1CT10HLI3H0PZUS"
-    bk = "demobct"
+    # requires parameters upload|download <endpoint> <access key> <secret key> <bucket name>
+    if len(sys.argv) == 6:
+        ep = sys.argv[2]
+        ak = sys.argv[3]
+        sk = sys.argv[4]
+        bk = sys.argv[5]
 
-    if len(sys.argv) == 2:
         if sys.argv[1] == 'upload':
             for file in os.listdir('data'):
                 result = upload_to_s3(ep, ak, sk, bk, f"./data/{file}")
@@ -89,4 +90,4 @@ if __name__ == "__main__":
 
 
     else:
-        print(f'Usage: python3 {sys.argv[0]} upload|download')
+        print(f'Usage: python3 {sys.argv[0]} upload|download <endpoint> <access key> <secret key> <bucket name>')

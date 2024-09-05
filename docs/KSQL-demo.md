@@ -1,6 +1,6 @@
 # KSQL
 
-[Installation](https://docs.ezmeral.hpe.com/datafabric-customer-managed/76/Kafka/KSQL/Ksql-demo-example.html)
+[Installation](https://docs.ezmeral.hpe.com/datafabric-customer-managed/78/Kafka/KSQL/Ksql-demo-example.html)
 
 
 `maprcli stream create -path /kafkatest -produceperm p -consumeperm p -topicperm p`
