@@ -1,12 +1,12 @@
 version: '3.8'
 
 services:
-  client:
+  maprclient:
     image: maprtech/pacc:7.2.0_9.1.0_ubuntu20_yarn_fuse_hbase_hive_spark_streams
     restart: unless-stopped
 
     volumes:
-      - app:/app:cached
+      - maprclient:/app:cached
 
     working_dir: /app
     # Overrides default command so things don't shut down after the process ends.
@@ -41,4 +41,4 @@ services:
       LANGUAGE: en_US.UTF-8
 
 volumes:
-  app:
+  maprclient:
