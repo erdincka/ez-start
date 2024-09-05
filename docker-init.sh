@@ -55,7 +55,8 @@ fi
 echo ${MAPR_CONTAINER_PASSWORD} | maprlogin password -user ${MAPR_CONTAINER_USER}
 
 # Mount /mapr
-([ -d /mapr ] && umount -l /mapr) || mkdir /mapr
+[ -d /mapr ] && umount -l /mapr || true # ignore errors
+mkdir -p /mapr
 
 mount -t nfs4 -o nolock,soft ${MAPR_CLDB_HOSTS}:/mapr /mapr
 
