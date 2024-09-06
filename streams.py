@@ -1,4 +1,5 @@
 import logging
+from random import randint
 import sys
 
 import common
@@ -65,8 +66,8 @@ if __name__ == "__main__":
         if sys.argv[1] == "produce":
             with open("./data/Testing_set_ccpp.csv", "r") as f:
                 for i, line in enumerate(f):
-                    if i > 10: break
-                    print(produce("/apps/stream1", "topic1", line))
+                    if randint(1, 10) > 7: # randomly pick 30% of records
+                        print(produce("/apps/stream1", "topic1", line))
 
         elif sys.argv[1] == "consume":
             for msg in consume("/apps/stream1", "topic1", "cg1"):
