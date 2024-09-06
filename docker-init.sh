@@ -62,7 +62,7 @@ mkdir -p /mapr
 
 mount -t nfs4 -o nolock,soft ${MAPR_CLDB_HOSTS}:/mapr /mapr
 
-[ -d .git ] || git clone https://github.com/erdincka/pacc-app.git .
+[ -d .git ] || git clone https://github.com/erdincka/ez-start.git .
 
 echo "Client is ready, sleeping..."
 
