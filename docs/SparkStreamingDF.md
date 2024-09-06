@@ -30,7 +30,7 @@ Run this on the cluster node
 
 `wget https://repo1.maven.org/maven2/io/delta/delta-spark_2.12/3.2.0/delta-spark_2.12-3.2.0.jar`
 
-## Save this code in cluster filesystem (ie, /mapr/CHANGEME/apps/spark-stream.py)
+## Save this code and update settings (ie, ~/spark-stream.py)
 
 
 ```python
@@ -38,11 +38,13 @@ Run this on the cluster node
 from pyspark.sql import SparkSession
 from pyspark.sql.types import StringType
 
+### UPDATE SETTINGS HERE
 mapr_user=
 mapr_password=
 hostname=
 topic="/apps/stream1:topic1"
 
+### NO NEED TO CHANGE BELOW THIS LINE
 
 # Define Kafka parameters
 kafka_params = {
@@ -110,7 +112,7 @@ if __name__ == "__main__":
 ```bash
 
 
-$SPARK_HOME/bin/spark-submit \
+$SPARK_HOME/bin/pyspark \
     --master yarn \
     --deploy-mode cluster \
     --packages io.delta:delta-spark_2.12:3.2.0 \
@@ -120,7 +122,6 @@ $SPARK_HOME/bin/spark-submit \
     --conf spark.driver.memory=1G \
     --conf spark.executor.instances=1 \
     --conf spark.executor.cores=1 \
-    --conf spark.executor.memory=1G \
-    maprfs:///apps/spark-stream.py
+    --conf spark.executor.memory=1G < maprfs:///apps/spark-stream.py
 
 ```

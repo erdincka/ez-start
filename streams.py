@@ -65,10 +65,12 @@ if __name__ == "__main__":
     if len(sys.argv) == 2:
         if sys.argv[1] == "produce":
             with open("./data/Testing_set_ccpp.csv", "r") as f:
+                count = 0
                 for i, line in enumerate(f):
-                    if randint(1, 10) > 7: # randomly pick 30% of records
-                        print(produce("/apps/stream1", "topic1", line))
-
+                    if randint(1, 100) > 99: # randomly pick ~1% of records
+                        print(f"line: {i}: {produce('/apps/stream1', 'topic1', line)}")
+                        count += 1
+                print(f"{count} messages published")
         elif sys.argv[1] == "consume":
             for msg in consume("/apps/stream1", "topic1", "cg1"):
                 print(msg)
